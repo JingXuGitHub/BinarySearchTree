@@ -1,0 +1,163 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+
+import random
+
+class Student(object):
+    
+    def __init__(self, Id, Name, Score):
+        self.Id = Id
+        self.Name = Name
+        self.Score = Score
+        
+class Node(object):
+    
+    def __init__(self, data):
+        self.data = data
+        self.left = 0
+        self.right = 0
+        
+class BinarySearchTree(object):
+    
+    def __init__(self):
+        self.root = 0
+        
+    def Insert(self, data):
+        self.root = self.insert(self.root, data)
+        
+    def insert(self, node, data):
+        if node == 0:
+            node = Node(data)
+        else:
+            if data.Id <= node.data.Id:
+                node.left = self.insert(node.left, data)
+            else:
+                node.right = self.insert(node.right, data)
+        return node
+    
+    def Search(self, key):
+        temp = self.root
+        while temp != 0 and temp.data.Id != key:
+            if key < temp.data.Id:
+                temp = temp.left
+            else:
+                temp = temp.right
+        return temp
+    
+    def Delete(self, key):
+        if self.root == 0 or self.Search(key) == 0:
+            print("No item found to delete")
+            return
+        self.root = self.delete(self.root, key)
+        print(key, "has been deleted")
+        
+    def delete(self, node, key):
+        if node.data.Id == key:
+            if node.left == 0 and node.right == 0:
+                return 0
+            elif node.left == 0:
+                return node.right
+            elif node.right == 0:
+                return node.left
+            else:
+                temp1 = node.right
+                temp2 = temp1
+                while temp2.left != 0:
+                    temp2 = temp2.left
+                temp2.left = node.left
+                return temp1
+        elif key < node.data.Id:
+            node.left = self.delete(node.left, key)
+        else:
+            node.right = self.delete(node.right, key)
+        return node
+    def InOrder(self, localRoot):
+        if localRoot != 0:
+            self.InOrder(localRoot.left)
+            print("Id: %d, Name: %s, Score: %f" %(localRoot.data.Id, localRoot.data.Name, localRoot.data.Score))
+            self.InOrder(localRoot.right)
+#        else:
+#            print("No items in the tree")
+            
+    def PreOrder(self, localRoot):
+        if localRoot != 0:
+            print("Id: %d, Name: %s, Score: %f" %(localRoot.data.Id, localRoot.data.Name, localRoot.data.Score))
+            self.InOrder(localRoot.left)
+            self.InOrder(localRoot.right)
+#        else:
+#            print("No items in the tree")
+            
+    def PostOrder(self, localRoot):
+        if localRoot != 0:
+            self.InOrder(localRoot.left)
+            self.InOrder(localRoot.right)
+            print("Id: %d, Name: %s, Score: %f" %(localRoot.data.Id, localRoot.data.Name, localRoot.data.Score))
+#        else:
+#            print("No items in the tree")
+        
+#Test
+
+menulist = ['Enter: ',
+		'1  for Search', 
+		'2  for Insertion', 
+		'3  for Deletion', 
+		'4  for Getting the root', 
+		'5  for Printing in-order', 
+		'6  for Printing pre-order', 
+		'7  for Printing post-order']
+def menu():
+	for i in range(len(menulist)):
+		print(menulist[i])
+	return int(input())
+
+def Main():
+    BST = BinarySearchTree()
+    for i in range(7):
+        print("Enter student Id, Name, and Score:")
+        Id = int(input())
+        Name = input()
+        Score = float(input())
+#        Id = random.randint(1,100)
+#        Name = 'aa' + str(i)
+#        Score = random.randrange(1, 100)
+        BST.Insert(Student(Id, Name, Score))
+    BST.InOrder(BST.root)    
+    s = menu()
+    while s in range(1,8):
+        if s == 1:
+            key = int(input("Enter student Id you want to search:"))
+            foundNode = BST.Search(key)
+            if (foundNode != 0):
+                print("The student is found: Id: %d, Name: %s, Score: %f" %(foundNode.data.Id, foundNode.data.Name, foundNode.data.Score))
+            else:
+                print("There is no such student with Id of ", key)
+        if s == 2:
+            print("Enter student information to insert(Id, Name, Score): ")
+            Id = int(input())
+            Name = input()
+            Score = float(input())
+            BST.Insert(Student(Id, Name, Score))
+            print("Students in the BST are(in-oder): ")
+            BST.InOrder(BST.root)
+        if s == 3:
+            key = int(input("Enter student Id you want to delete: "))
+            BST.Delete(key)
+            print("Students in the BST are(in-oder): ")
+            BST.InOrder(BST.root)
+        if s == 4:
+            if BST.root != 0:
+                print("Student item at the root is: Id: %d, Name: %s, Score: %f" %(BST.root.data.Id, BST.root.data.Name, BST.root.data.Score))
+            else:
+                print("The BST is empty!")
+        if s == 5:
+            BST.InOrder(BST.root)
+        if s == 6:
+            BST.PreOrder(BST.root)
+        if s == 7:
+            BST.PostOrder(BST.root)
+        s = menu()
+Main()
